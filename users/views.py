@@ -1,6 +1,7 @@
 from multiprocessing import context
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth import logout,login
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
 from users.forms import UserForm, UserProfileForm
 # Create your views here.
@@ -28,3 +29,12 @@ def register(request):
         'form_user':form_user
     }
     return render(request,'users/register.html',context)
+
+
+def user_login(request):
+    form=AuthenticationForm(request,data=request.POST)
+    if form.is_valid():
+        user=form.get_user()
+        login(request,user)
+        return redirect('home')
+    return render(request,'users/user_login.html',{"form":form})
